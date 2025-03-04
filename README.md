@@ -23,4 +23,4 @@ No external libraries are needed as the program uses Python's standard `random` 
 
 1. **Clone the repository:**
    ```bash
-   git clone [<repository-url>](https://github.com/jaivarshanv/sorting-/blob/main/sorting_comparison.py)
+   git clone https://github.com/jaivarshanv/sorting-/blob/main/sorting_comparison.py
