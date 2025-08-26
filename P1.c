@@ -1,100 +1,70 @@
 #include <stdio.h>
 
-int cmp1 = 0; 
-int cmp2 = 0;
+int c1=0,c2=0;
 
-void printArr(int a[], int n) {
-    int i;
-    for(i=0;i<n;i++){
-        printf("%d ", a[i]);
-    }
+void s(int *x,int *y){int t=*x;*x=*y;*y=t;}
+
+void p(int a[],int n){
+    for(int i=0;i<n;i++)printf("%d ",a[i]);
     printf("\n");
 }
 
-void swap(int *x, int *y){
-    int t = *x;
-    *x = *y;
-    *y = t;
-}
-
-int partLast(int a[], int l, int h){
-    int piv = a[h];
-    int i = l-1;
-    int j;
-    for(j=l;j<h;j++){
-        cmp1++;
-        if(a[j]<=piv){
-            i++;
-            swap(&a[i], &a[j]);
-        }
+int part1(int a[],int l,int h){
+    int p=a[h],i=l-1;
+    for(int j=l;j<h;j++){
+        c1++;
+        if(a[j]<=p){i++;s(&a[i],&a[j]);}
     }
-    swap(&a[i+1], &a[h]);
+    s(&a[i+1],&a[h]);
     return i+1;
 }
 
-void qSortLast(int a[], int l, int h, int n){
+void q1(int a[],int l,int h,int n){
     if(l<h){
-        int pi = partLast(a,l,h);
-        printf("Partition using pivot %d -> ", a[pi]);
-        printArr(a,n);
-        printf("Subarray calls: [%d..%d], [%d..%d]\n", l, pi-1, pi+1, h);
-        qSortLast(a,l,pi-1,n);
-        qSortLast(a,pi+1,h,n);
+        int pi=part1(a,l,h);
+        printf("Pivot %d -> ",a[pi]);p(a,n);
+        q1(a,l,pi-1,n);
+        q1(a,pi+1,h,n);
     }
 }
 
-int medianOfThree(int a[], int l, int h){
-    int m = (l+h)/2;
-    if(a[l]>a[m]) swap(&a[l], &a[m]);
-    if(a[l]>a[h]) swap(&a[l], &a[h]);
-    if(a[m]>a[h]) swap(&a[m], &a[h]);
-    swap(&a[m], &a[h]);
+int med3(int a[],int l,int h){
+    int m=(l+h)/2;
+    if(a[l]>a[m])s(&a[l],&a[m]);
+    if(a[l]>a[h])s(&a[l],&a[h]);
+    if(a[m]>a[h])s(&a[m],&a[h]);
+    s(&a[m],&a[h]);
     return a[h];
 }
 
-int partMedian(int a[], int l, int h){
-    int piv = medianOfThree(a,l,h);
-    int i=l-1;
-    int j;
-    for(j=l;j<h;j++){
-        cmp2++;
-        if(a[j]<=piv){
-            i++;
-            swap(&a[i],&a[j]);
-        }
+int part2(int a[],int l,int h){
+    int p=med3(a,l,h),i=l-1;
+    for(int j=l;j<h;j++){
+        c2++;
+        if(a[j]<=p){i++;s(&a[i],&a[j]);}
     }
-    swap(&a[i+1],&a[h]);
+    s(&a[i+1],&a[h]);
     return i+1;
 }
 
-void qSortMedian(int a[], int l, int h, int n){
+void q2(int a[],int l,int h){
     if(l<h){
-        int pi=partMedian(a,l,h);
-        qSortMedian(a,l,pi-1,n);
-        qSortMedian(a,pi+1,h,n);
+        int pi=part2(a,l,h);
+        q2(a,l,pi-1);
+        q2(a,pi+1,h);
     }
 }
 
 int main(){
-    int n,i;
-    printf("Enter n: ");
-    scanf("%d",&n);
+    int n;printf("n: ");scanf("%d",&n);
     int a[n],b[n];
-    printf("Enter %d numbers:\n",n);
-    for(i=0;i<n;i++){
-        scanf("%d",&a[i]);
-        b[i]=a[i];
-    }
-    printf("\n--- Quick Sort (Last Pivot) ---\n");
-    qSortLast(a,0,n-1,n);
-    printf("Sorted array: ");
-    printArr(a,n);
-    printf("Total comparisons: %d\n", cmp1);
+    for(int i=0;i<n;i++){scanf("%d",&a[i]);b[i]=a[i];}
+    printf("\n-- Quick Sort (Last Pivot) --\n");
+    q1(a,0,n-1,n);printf("Sorted: ");p(a,n);
+    printf("Comparisons: %d\n",c1);
 
-    printf("\n--- Quick Sort (Median of Three) ---\n");
-    qSortMedian(b,0,n-1,n);
-    printf("Sorted array: ");
-    printArr(b,n);
-    printf("Total comparisons: %d\n", cmp2);
+    printf("\n-- Quick Sort (Median 3) --\n");
+    q2(b,0,n-1);printf("Sorted: ");p(b,n);
+    printf("Comparisons: %d\n",c2);
     return 0;
 }
